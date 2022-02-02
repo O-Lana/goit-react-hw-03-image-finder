@@ -1,33 +1,51 @@
-// import { Component } from "react";
-// import { Header } from './SearchBar.styled';
+import { Component } from "react";
+import { Header } from './SearchBar.styled';
 
-// export class SearchBar extends Component {
-//     state = {
-//         img: null,
-//     };
+export default class SearchBar extends Component {
+    state = {
+        searchImages: '',
+        page: 1,
 
-//     componentDidMount() {
-//         fetch('https://pixabay.com/api/?q=cat&page=1&key=24504090-67d4d1d2d94058f1108b78b7b&image_type=photo&orientation=horizontal&per_page=12')
-//             .then(res => res.json())
-//             .then(console.log);
-//     }
+    };
 
-//     render() {
-//         return (
-//             <Header>
-//                 <form>
-//                     <button type="submit">
-//                         <span>Search</span>
-//                     </button>
+    // componentDidMount() {
+    searchTagsImages = event => {
+        this.setState({ searchImages: event.currentTarget.value.toLowerCase() });
+    };
 
-//                     <input
-//                         type="text"
-//                         autoComplete="off"
-//                         autoFocus
-//                         placeholder="Search images and photos"
-//                     />
-//                 </form>
-//             </Header>
-//         )
-//     };
-// };
+    handleSubmit = event => {
+        event.preventDefault();
+
+        if (this.state.searchImages.trim() === '') {
+            alert('Введите имя');
+            return;
+        };
+        this.props.onSubmit(this.state.searchImages);
+        this.setState({ searchImages: '' });
+    };
+
+    
+    render() {
+        return (
+            <>
+                <Header>
+                    <form onSubmit={this.handleSubmit}>
+                        <button type="submit">
+                            <span>Search</span>
+                        </button>
+
+                        <input
+                            type="text"
+                            name="searchImages"
+                            value={this.state.searchImages}
+                            onChange={this.searchTagsImages}
+                            autoComplete="off"
+                            autoFocus
+                            // placeholder="Search images and photos"
+                        />
+                    </form>
+                </Header>
+            </>
+        )
+    };
+};
