@@ -1,15 +1,13 @@
 import { Component } from "react";
-import { Header } from './SearchBar.styled';
+// import PropTypes from 'prop-types';
+import './SearchBar.css';
 
 export default class SearchBar extends Component {
     state = {
         searchImages: '',
-        page: 1,
-
     };
 
-    // componentDidMount() {
-    searchTagsImages = event => {
+    searchNameImages = event => {
         this.setState({ searchImages: event.currentTarget.value.toLowerCase() });
     };
 
@@ -17,9 +15,10 @@ export default class SearchBar extends Component {
         event.preventDefault();
 
         if (this.state.searchImages.trim() === '') {
-            alert('Введите имя');
+            alert('Введите слово для поиска');
             return;
-        };
+        }
+
         this.props.onSubmit(this.state.searchImages);
         this.setState({ searchImages: '' });
     };
@@ -28,23 +27,24 @@ export default class SearchBar extends Component {
     render() {
         return (
             <>
-                <Header>
-                    <form onSubmit={this.handleSubmit}>
-                        <button type="submit">
-                            <span>Search</span>
+                <header className="SearchBar">
+                    <form className="SearchForm" onSubmit={this.handleSubmit}>
+                        <button type="submit" className="SearchForm-button">
+                            <span className="SearchForm-button-label">Search</span>
                         </button>
 
                         <input
+                            className="SearchForm-input"
                             type="text"
                             name="searchImages"
                             value={this.state.searchImages}
-                            onChange={this.searchTagsImages}
+                            onChange={this.searchNameImages}
                             autoComplete="off"
                             autoFocus
-                            // placeholder="Search images and photos"
+                            placeholder="Search images and photos"
                         />
                     </form>
-                </Header>
+                </header>
             </>
         )
     };

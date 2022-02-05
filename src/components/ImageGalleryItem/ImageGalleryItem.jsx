@@ -1,23 +1,21 @@
-import { Item, Image } from './ImageGalleryItem.styled';
+import './ImageGalleryItem.css';
+import PropTypes from 'prop-types';
 
-// export default function ImageGalleryItem({img: {id, webformatURL, largeImageURL}}) {
-//     return (
-//         <Item>
-//             <Image
-//                 key={id}
-//                 src={webformatURL}
-//                 alt="photo" />
-//         </Item>
-//     );
-// };
-
-export const ImageGalleryItem = ({ img: { id, webformatURL, largeImageURL } }) => {
+export const ImageGalleryItem = ({tags, preview, largeImage}) => {
     return (
-        <Item>
-            <Image
-                key={id}
-                src={webformatURL}
-                alt="photo" />
-        </Item>
+        <li className="ImageGalleryItem">
+            <img
+                src={preview}
+                alt={tags}
+                className="ImageGalleryItem-image"
+            />
+        </li>
     );
+};
+
+ImageGalleryItem.propTypes = {
+    tags: PropTypes.string.isRequired,
+    preview: PropTypes.string.isRequired,
+    largeImage: PropTypes.string.isRequired,
+    onModalShow: PropTypes.func.isRequired,
 };

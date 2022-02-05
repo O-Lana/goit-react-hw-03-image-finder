@@ -1,14 +1,30 @@
-const BASE_URL = 'https://pixabay.com/api/';
-const API_KEY = '24504090-67d4d1d2d94058f1108b78b7b';
+// import axios from 'axios';
 
-function fetchImage(query, page) {
-    return fetch(`${BASE_URL}?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`)
-        .then(response => response.json());
-            
-};
+// const API_KEY = '24504090-67d4d1d2d94058f1108b78b7b';
+// axios.defaults.baseURL = 'https://pixabay.com/api/';
 
-const imageApi = {
-    fetchImage,
-};
+// export const getImages = async (data, page) => {
+//   const response = await axios.get(`?q=${data}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`);
+//   return response.data;
+// };
 
-export default imageApi;
+function fetchImages(query, page) {
+  const API_KEY = '24504090-67d4d1d2d94058f1108b78b7b';
+  const URL = `https://pixabay.com/api/?q=${query}&page=${page}&key=${API_KEY}&image_type=photo&orientation=horizontal&per_page=12`;
+
+  return fetch(URL)
+    .then(response => {
+      if (response.ok) {
+        return response.json();
+      }
+
+      return Promise.reject(new Error(`Нет фото с таким запросом ${query}`));
+    });
+}
+
+// const API = {
+//   fetchImages
+// };
+
+export default fetchImages;
+
