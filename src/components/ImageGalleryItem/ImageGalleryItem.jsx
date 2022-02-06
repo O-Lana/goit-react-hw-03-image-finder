@@ -1,17 +1,21 @@
-import './ImageGalleryItem.css';
 import PropTypes from 'prop-types';
+import './ImageGalleryItem.css';
 
-export const ImageGalleryItem = ({tags, preview, largeImage}) => {
+const ImageGalleryItem = ({preview, largeImage, tags, onModalShow}) => {
     return (
-        <li className="ImageGalleryItem">
+        <li className="imageGalleryItem">
             <img
                 src={preview}
                 alt={tags}
-                className="ImageGalleryItem-image"
+                onClick={() => onModalShow(largeImage)}
+                className="imageGalleryItem-image"
             />
         </li>
     );
 };
+
+export default ImageGalleryItem;
+
 
 ImageGalleryItem.propTypes = {
     tags: PropTypes.string.isRequired,

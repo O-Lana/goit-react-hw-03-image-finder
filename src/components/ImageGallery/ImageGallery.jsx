@@ -1,18 +1,19 @@
 import PropTypes from 'prop-types';
-import { ImageGalleryItem } from '../ImageGalleryItem/ImageGalleryItem';
+import ImageGalleryItem from '../ImageGalleryItem/ImageGalleryItem';
 import './ImageGallery.css';
 
-export const ImageGallery = ({ gallery }) => {
+const ImageGallery = ({ gallery, onModalShow }) => {
+
     return (
-        <ul className="ImageGallery">
-            {gallery.map(({ id, tags, webformatURL, largeImageURL }) => {
+        <ul className="imageGallery">
+            {gallery.map(({ id, webformatURL, largeImageURL, tags }) => {
                 return (
                     <ImageGalleryItem
                         key={id}
-                        tags={tags}
                         preview={webformatURL}
                         largeImage={largeImageURL}
-                        // onModalShow={onModalShow}
+                        tags={tags}
+                        onModalShow={onModalShow}
                     />
                 );
             })}
@@ -20,12 +21,17 @@ export const ImageGallery = ({ gallery }) => {
     );
 };
 
-ImageGallery.prototype = {
-    gallery: PropTypes.arrayOf({
+export default ImageGallery;
+
+
+ImageGallery.propTypes = {
+    gallery: PropTypes.arrayOf(
+        PropTypes.shape({
         id: PropTypes.number.isRequired,
         tags: PropTypes.string.isRequired,
         webformatURL: PropTypes.string.isRequired,
         largeImageURL: PropTypes.string.isRequired,
-    }),
-    // onModalShow: PropTypes.func.isRequired,
+        }))
+        .isRequired,
+    onModalShow: PropTypes.func.isRequired,
 };
