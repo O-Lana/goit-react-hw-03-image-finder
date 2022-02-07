@@ -4,34 +4,26 @@ import SearchBar from './SearchBar/SearchBar';
 import ImageGallery from './ImageGallery/ImageGallery';
 import Button from './Button/Button';
 import Modal from './Modal/Modal';
+import {TailSpin} from 'react-loader-spinner';
 import './App.css';
-
-import { ThreeCircles } from 'react-loader-spinner';
-
-
 
 export class App extends Component {
   state = {
     searchImages: '',
     page: 1,
+    isLoading: false,
     gallery: [],
-    // loading: false,
-    showModal: false,
-    // error: null,
     largeImage: '',
-    status: 'idle',
-    
+    showModal: false,
+    currentHitsPerPage: null,
   };
 
   
-  
-  componentDidUpdate(prevProps, prevState) {
-    const { searchImages, page, status } = this.state;
+  componentDidUpdate(_, prevState) {
+    const { searchImages, page } = this.state;
 
     const prevSearch = prevState.searchImages;
-    // const nextSearch = this.state.searchImages;
     const prevPage = prevState.page;
-    // const nextPage = this.state.page;
 
     // if (nextPage > 1) {
     //   window.scrollTo({
@@ -40,9 +32,9 @@ export class App extends Component {
     //   });
     // }
 
-
     if (prevSearch !== searchImages || prevPage !== page) {
-      this.setState({status: 'pending'})
+      this.setState({isLoading: true})
+
 
       API
         .fetchImages(searchImages, page)
@@ -57,21 +49,21 @@ export class App extends Component {
             this.setState(prevState => {
               return {
                 gallery: [...prevState.gallery, ...images],
-                status: 'resolved',
+                isLoading: false,
+                currentHitsPerPage: hits.length,
               };
             });
           } else {
             alert(`По запросу ${searchImages} ничего не найдено.`);
-            this.setState({ status: 'idle' });
+            this.setState({ isLoading: false });
           }
         })
-        .catch(error => this.setState({ error })); //, status: 'rejected' 
+        .catch(error => this.setState({ error }));
     }
   }
 
-  //?
   handleFormSubmit = nextSearchImages => {
-      this.setState({ searchImages: nextSearchImages, page: 1, gallery: [] });
+      this.setState({ searchImages: nextSearchImages, page: 1, gallery: [], currentHitsPerPage: null });
     };
 
    handleLoadMore = () => {
@@ -92,39 +84,30 @@ export class App extends Component {
     };
   
     render() {
-      const { gallery, status, page, showModal, largeImage } = this.state;
+      const { gallery, isLoading, currentHitsPerPage, error, showModal, largeImage } = this.state;
 
       return (
         <div className="app">
-
           <SearchBar onSubmit={this.handleFormSubmit} />
-          {status === 'idle' && ''}
 
-          {status === 'pending' && <ThreeCircles color="#3f51b5" height={110} width={110} ariaLabel="three-circles-rotating" />}
-
-          {status === 'pending' && page > 1 && (
+          {gallery.length > 0 && !error && (
             <>
-            <ImageGallery gallery={gallery} onModalShow={this.onOpenImage} />
-            <ThreeCircles color="#3f51b5" height={110} width={110} ariaLabel="three-circles-rotating" />
+              <ImageGallery gallery={gallery} onModalShow={this.onOpenImage} />
+              {currentHitsPerPage && currentHitsPerPage < 12 && (
+                  <p className="message">Конец результатов поиска</p>
+              )}
             </>
           )}
 
-          {status === 'resolved' && (
-          <>
-            <ImageGallery gallery={gallery} onModalShow={this.onOpenImage} />
+          {currentHitsPerPage === 12 && !isLoading && (
             <Button onClickBtn={this.handleLoadMore} />
-          </>
           )}
-          
-          {status === 'rejected' && alert('Please try again')}
 
-          {/* {gallery.length >= 12 && <Button onClickBtn={this.handleLoadMore} />} */}
-          
+          {isLoading && <TailSpin ariaLabel="loading-indicator" color="#3f51b5" />}
+
           {showModal && <Modal image={largeImage} onClose={this.toggleModal} />}
 
-          
         </div>
       );
     }
-
   }
